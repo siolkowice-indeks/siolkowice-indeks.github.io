@@ -166,7 +166,7 @@ document.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.cl
 $('f').addEventListener('submit',e=>{e.preventDefault();search()});
 $('clr').onclick=()=>{$('f').reset();idle();$('qn').focus()};
 
-fetch('dane.json').then(r=>r.json()).then(data=>{D=data;for(const d of D)d._p=persons(d);coverage();idle()})
+fetch('dane.json?v='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(data=>{D=data;for(const d of D)d._p=persons(d);coverage();idle()})
   .catch(()=>{$('cnt').textContent='Nie udało się wczytać pliku dane.json.'});
 }
 </script>
