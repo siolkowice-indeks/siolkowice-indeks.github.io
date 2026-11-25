@@ -116,7 +116,7 @@ function persons(d){
   const L=[];const add=(g,im,naz)=>{if(im||naz)L.push({g,ni:String(im||'').split(/\s+/).map(norm),nv:variants(naz)})};
   if(d.t==='U'){add(1,d.i,d.n);if(d.o)add(0,d.o,baseName(d.n));add(0,d.mi,d.mn)}
   if(d.t==='M'){add(1,d.pi,d.pn);if(d.po)add(0,d.po,maiden(d.pn)||d.pn);add(0,d.pmi,d.pmn);add(1,d.ki,d.kn);if(d.ko)add(0,d.ko,maiden(d.kn)||d.kn);add(0,d.kmi,d.kmn)}
-  if(d.t==='Z'&&d.i){add(1,d.i,d.n);if(d.o&&!/^\[/.test(d.o))add(0,d.o,maiden(d.n)||d.n);if(d.mi)add(0,d.mi,d.mn)}
+  if(d.t==='Z'&&d.i){add(1,d.i,[d.n,d.on].filter(Boolean).join(', '));if(d.o)add(0,d.o,d.on);if(d.mi)add(0,d.mi,d.mn)}
   return L;
 }
 
@@ -124,15 +124,15 @@ const HEAD={
  U:`<tr><th>Rok</th><th>Akt</th><th>Imię</th><th>Nazwisko</th><th class="sep">Imię ojca</th><th>Imię matki</th><th>Nazwisko matki</th></tr>`,
  M:`<tr><th rowspan="2">Rok</th><th rowspan="2">Akt</th><th colspan="5" class="grp">Pan młody</th><th colspan="5" class="grp sep">Panna młoda</th></tr>
     <tr><th>Imię</th><th>Nazwisko</th><th>Ojciec</th><th>Imię matki</th><th>Nazwisko matki</th><th class="sep">Imię</th><th>Nazwisko</th><th>Ojciec</th><th>Imię matki</th><th>Nazwisko matki</th></tr>`,
- Z:`<tr><th>Rok</th><th>Akt</th><th>Imię</th><th>Nazwisko</th><th class="sep">Imię ojca</th><th>Imię matki</th><th>Nazwisko matki</th></tr>`};
+ Z:`<tr><th>Rok</th><th>Akt</th><th>Imię</th><th>Nazwisko</th><th class="sep">Imię ojca</th><th>Nazwisko ojca</th><th>Imię matki</th><th>Nazwisko matki</th></tr>`};
 const LAB={U:['Rok','Akt','Imię','Nazwisko','Imię ojca','Imię matki','Nazwisko matki'],
  M:['Rok','Akt','Pan – imię','Pan – nazwisko','Pan – ojciec','Pan – imię matki','Pan – nazw. matki','Panna – imię','Panna – nazwisko','Panna – ojciec','Panna – imię matki','Panna – nazw. matki'],
- Z:['Rok','Akt','Imię','Nazwisko','Imię ojca','Imię matki','Nazwisko matki']};
+ Z:['Rok','Akt','Imię','Nazwisko','Imię ojca','Nazwisko ojca','Imię matki','Nazwisko matki']};
 function row(d){
   let c;
   if(d.t==='U')c=[d.r,d.a,d.i,d.n,d.o,d.mi,d.mn];
   if(d.t==='M')c=[d.r,d.a,d.pi,d.pn,d.po,d.pmi,d.pmn,d.ki,d.kn,d.ko,d.kmi,d.kmn];
-  if(d.t==='Z')c=[d.r,d.a,d.i,d.n,d.o,d.mi,d.mn];
+  if(d.t==='Z')c=[d.r,d.a,d.i,d.n,d.o,d.on,d.mi,d.mn];
   const sepAt={U:[4],M:[7],Z:[4]}[d.t];const L=LAB[d.t];
   return '<tr>'+c.map((v,i)=>`<td data-l="${L[i]}" class="${i<2?'n':''}${sepAt.includes(i)?' sep':''}">${cell(v)}</td>`).join('')+'</tr>';
 }
