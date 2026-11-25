@@ -24,7 +24,7 @@ h1{font:700 clamp(30px,5vw,44px)/1.05 "Archivo Narrow",sans-serif;margin:0 0 6px
 .tab[aria-selected=true]{background:var(--ink);color:var(--bg)}
 form{border:2px solid var(--ink);border-top:0;padding:18px;display:grid;gap:14px;grid-template-columns:minmax(0,2fr) minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr)}
 label{display:flex;flex-direction:column;gap:4px;font:500 13px "Archivo Narrow",sans-serif;color:var(--mute)}
-input[type=text],input[type=number]{font:16px Archivo,sans-serif;color:var(--ink);background:transparent;border:0;border-bottom:1.5px dotted var(--ink);padding:8px 2px;min-height:44px;width:100%}
+input[type=text]{font:16px Archivo,sans-serif;color:var(--ink);background:transparent;border:0;border-bottom:1.5px dotted var(--ink);padding:8px 2px;min-height:44px;width:100%}
 input:focus-visible,button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 .row2{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
 .chk{flex-direction:row;align-items:center;gap:8px;font-size:15px;color:var(--ink);min-height:44px;cursor:pointer}
@@ -42,7 +42,6 @@ td.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 th.grp{text-align:center;border-bottom:1px solid var(--line)}
 td.sep,th.sep{border-left:2px solid var(--line)}
 tr.hit td.h{background:var(--acc2)}
-td.u{font-size:13px;color:var(--mute);font-style:italic}
 .q{color:var(--warn);font-size:12px;white-space:nowrap}
 .empty{padding:28px;border:1px dashed var(--line);color:var(--mute);text-align:center}
 .pager{display:flex;gap:10px;align-items:center;justify-content:center;margin:16px 0;flex-wrap:wrap}
@@ -67,10 +66,10 @@ td.u{font-size:13px;color:var(--mute);font-style:italic}
   <button class="tab" role="tab" data-t="Z" aria-selected="false">Z – zgony</button>
 </div>
 <form id="f" autocomplete="off">
-  <label>Nazwisko<input type="text" id="qn" placeholder="puste = wszystkie"></label>
-  <label>Imię<input type="text" id="qi" placeholder="puste = wszystkie"></label>
-  <label>Rok od<input type="number" id="y1" inputmode="numeric"></label>
-  <label>Rok do<input type="number" id="y2" inputmode="numeric"></label>
+  <label>Nazwisko<input type="text" id="qn"></label>
+  <label>Imię<input type="text" id="qi"></label>
+  <label>Rok od<input type="text" id="y1" inputmode="numeric" maxlength="4"></label>
+  <label>Rok do<input type="text" id="y2" inputmode="numeric" maxlength="4"></label>
   <div class="row2">
     <label class="chk"><input type="checkbox" id="par">szukaj też wśród rodziców</label>
     <span class="sp"></span>
@@ -119,27 +118,27 @@ function persons(d){
 }
 
 const HEAD={
- U:`<tr><th>Rok</th><th>Akt</th><th>Imię</th><th>Nazwisko</th><th class="sep">Imię ojca</th><th>Imię matki</th><th>Nazwisko matki</th><th>Uwagi</th></tr>`,
- M:`<tr><th rowspan="2">Rok</th><th rowspan="2">Akt</th><th colspan="5" class="grp">Pan młody</th><th colspan="5" class="grp sep">Panna młoda</th><th rowspan="2">Uwagi</th></tr>
+ U:`<tr><th>Rok</th><th>Akt</th><th>Imię</th><th>Nazwisko</th><th class="sep">Imię ojca</th><th>Imię matki</th><th>Nazwisko matki</th></tr>`,
+ M:`<tr><th rowspan="2">Rok</th><th rowspan="2">Akt</th><th colspan="5" class="grp">Pan młody</th><th colspan="5" class="grp sep">Panna młoda</th></tr>
     <tr><th>Imię</th><th>Nazwisko</th><th>Ojciec</th><th>Imię matki</th><th>Nazwisko matki</th><th class="sep">Imię</th><th>Nazwisko</th><th>Ojciec</th><th>Imię matki</th><th>Nazwisko matki</th></tr>`,
- Z:`<tr><th>Rok</th><th>Akt</th><th>Imię</th><th>Nazwisko</th><th>Wiek</th><th class="sep">Imię ojca</th><th>Imię matki</th><th>Nazwisko matki</th><th>Uwagi</th></tr>`};
-const LAB={U:['Rok','Akt','Imię','Nazwisko','Imię ojca','Imię matki','Nazwisko matki','Uwagi'],
- M:['Rok','Akt','Pan – imię','Pan – nazwisko','Pan – ojciec','Pan – imię matki','Pan – nazw. matki','Panna – imię','Panna – nazwisko','Panna – ojciec','Panna – imię matki','Panna – nazw. matki','Uwagi'],
- Z:['Rok','Akt','Imię','Nazwisko','Wiek','Imię ojca','Imię matki','Nazwisko matki','Uwagi']};
+ Z:`<tr><th>Rok</th><th>Akt</th><th>Imię</th><th>Nazwisko</th><th class="sep">Imię ojca</th><th>Imię matki</th><th>Nazwisko matki</th></tr>`};
+const LAB={U:['Rok','Akt','Imię','Nazwisko','Imię ojca','Imię matki','Nazwisko matki'],
+ M:['Rok','Akt','Pan – imię','Pan – nazwisko','Pan – ojciec','Pan – imię matki','Pan – nazw. matki','Panna – imię','Panna – nazwisko','Panna – ojciec','Panna – imię matki','Panna – nazw. matki'],
+ Z:['Rok','Akt','Imię','Nazwisko','Imię ojca','Imię matki','Nazwisko matki']};
 function row(d){
   let c;
-  if(d.t==='U')c=[d.r,d.a,d.i,d.n,d.o,d.mi,d.mn,d.u];
-  if(d.t==='M')c=[d.r,d.a,d.pi,d.pn,d.po,d.pmi,d.pmn,d.ki,d.kn,d.ko,d.kmi,d.kmn,d.u];
-  if(d.t==='Z')c=d.i?[d.r,d.a,d.i,d.n,d.w,d.o,d.mi,d.mn,d.u]:[d.r,d.a,'','','','','','',d.u||'akt skreślony'];
-  const sepAt={U:[4],M:[7],Z:[5]}[d.t];const L=LAB[d.t];const last=c.length-1;
-  return '<tr>'+c.map((v,i)=>`<td data-l="${L[i]}" class="${i<2?'n':''}${sepAt.includes(i)?' sep':''}${i===last?' u':''}">${cell(v)}</td>`).join('')+'</tr>';
+  if(d.t==='U')c=[d.r,d.a,d.i,d.n,d.o,d.mi,d.mn];
+  if(d.t==='M')c=[d.r,d.a,d.pi,d.pn,d.po,d.pmi,d.pmn,d.ki,d.kn,d.ko,d.kmi,d.kmn];
+  if(d.t==='Z')c=[d.r,d.a,d.i,d.n,d.o,d.mi,d.mn];
+  const sepAt={U:[4],M:[7],Z:[4]}[d.t];const L=LAB[d.t];
+  return '<tr>'+c.map((v,i)=>`<td data-l="${L[i]}" class="${i<2?'n':''}${sepAt.includes(i)?' sep':''}">${cell(v)}</td>`).join('')+'</tr>';
 }
 
 function search(){
   const qn=norm($('qn').value),qi=norm($('qi').value);
   const y1=+$('y1').value||0,y2=+$('y2').value||9999,par=$('par').checked;
   RES=D.filter(d=>{
-    if(d.t!==T||d.r<y1||d.r>y2)return false;
+    if(d.t!==T||d.r<y1||d.r>y2||d.x)return false;
     if(!qn&&!qi)return true;
     return d._p.some(p=>(par||p.g)&&(!qn||p.nv.some(v=>v.startsWith(qn)))&&(!qi||p.ni.some(w=>w.startsWith(qi))));
   });
@@ -156,11 +155,11 @@ $('pg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b
 
 function coverage(){
   $('cov').innerHTML=['U','M','Z'].map(t=>{
-    const ys=new Set(D.filter(d=>d.t===t).map(d=>d.r));const n=D.filter(d=>d.t===t).length;const [a,b]=RANGE[t];
+    const ys=new Set(D.filter(d=>d.t===t).map(d=>d.r));const n=D.filter(d=>d.t===t&&!d.x).length;const [a,b]=RANGE[t];
     let cells='';for(let y=a;y<=b;y++)cells+=`<span class="yr${ys.has(y)?' on':''}" title="${y}"></span>`;
     return `<div class="covrow"><div><b>${t}</b> ${a}–${b}<br><small>${n} akt. · roczniki: ${[...ys].sort().join(', ')||'brak'}</small></div><div class="yrs">${cells}</div></div>`}).join('');
 }
-function idle(){$('res').innerHTML='';$('pg').innerHTML='';$('cnt').textContent=`${TYP[T]}: ${D.filter(d=>d.t===T).length} aktów w indeksie. Kliknij Szukaj (puste pola = wszystkie).`}
+function idle(){$('res').innerHTML='';$('pg').innerHTML='';$('cnt').textContent=`${TYP[T]}: ${D.filter(d=>d.t===T&&!d.x).length} aktów w indeksie. Kliknij Szukaj.`}
 
 document.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;
   T=b.dataset.t;document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===b));idle()});
