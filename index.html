@@ -130,7 +130,7 @@ const COLS={
  Z:[['r','Rok'],['a','Akt'],['i','Imię'],['n','Nazwisko'],['o','Imię ojca'],['on','Nazwisko ojca'],['mi','Imię matki'],['mn','Nazwisko matki']]};
 let SK='r',SD=1;
 const sbtn=(k,l,cls='',extra='')=>{const on=(SK===k)||(SK==='r'&&k==='a'&&false);const act=SK===k||((k==='r'||k==='a')&&SK==='r');
-  return `<th class="${cls}" ${extra} aria-sort="${act?(SD>0?'ascending':'descending'):'none'}"><button type="button" class="sort" data-k="${k}">${l}<span class="ar">${act?(SD>0?'▲':'▼'):''}</span></button></th>`};
+  return `<th class="${cls}" ${extra} aria-sort="${act?(SD>0?'ascending':'descending'):'none'}"><button type="button" class="sort" data-k="${k}">${l}<span class="ar">${act?'▲':''}</span></button></th>`};
 function head(t){
   const C=COLS[t];
   if(t!=='M')return '<tr>'+C.map(([k,l],i)=>sbtn(k==='a'?'r':k,l,(t==='U'&&i===4)||(t==='Z'&&i===4)?'sep':'')).join('')+'</tr>';
@@ -177,7 +177,7 @@ function show(){
   $('pg').innerHTML=pages>1?`<button type="button" class="ghost" id="prev" ${page?'':'disabled'}>← Poprzednie</button><span>${page+1} / ${pages}</span><button type="button" class="ghost" id="next" ${page<pages-1?'':'disabled'}>Następne →</button>`:'';
 }
 $('res').addEventListener('click',e=>{const b=e.target.closest('.sort');if(!b)return;const k=b.dataset.k;
-  if(SK===k)SD=-SD;else{SK=k;SD=1}sortRes();page=0;show()});
+  SK=k;SD=1;sortRes();page=0;show()});
 $('pg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.disabled)return;page+=b.id==='next'?1:-1;show();$('cnt').scrollIntoView()});
 
 function coverage(){
