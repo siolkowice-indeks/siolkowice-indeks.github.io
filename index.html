@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Indeks USC Stare Siołkowice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;700&family=Archivo:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: rzeczowy, archiwalny – narzędzie do pracy, nie wystawa
+   IDEA: drukowany formularz Standesamtu z 1885 r. – rubryki, numer aktu, linie do wpisu
+   PICTURE: sama wyszukiwarka jest obrazem: pole nazwiska jak rubryka formularza, wyniki jak wpisy z numerem "Nr."
+   COLOUR and TYPE: biały papier, atrament #1b2230, zieleń drukarska formularzy #1f5c4a jako jedyny akcent; Archivo Narrow + Archivo
+   LAYOUT: jedna kolumna do 1000px; formularz u góry, wyniki pod spodem, stan indeksu na dole */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#12161d);--ink:light-dark(#1b2230,#e7eaef);--mute:light-dark(#5d6573,#9aa3b2);--line:light-dark(#d9dde3,#2c3440);--acc:light-dark(#1f5c4a,#6fc1a5);--acc2:light-dark(#e8f1ee,#1b2a26);--warn:light-dark(#a1462b,#f0a184);--card:light-dark(#fafbfc,#171c24)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Archivo,system-ui,sans-serif;overflow-x:clip}
+.wrap{max-width:1000px;margin:0 auto;padding:clamp(20px,4vw,48px) max(4vw,16px)}
+h1{font:700 clamp(30px,5vw,44px)/1.05 "Archivo Narrow",sans-serif;margin:0 0 6px;text-wrap:balance}
+.sub{color:var(--mute);margin:0 0 24px}
+form{border:2px solid var(--ink);padding:18px;display:grid;gap:14px;grid-template-columns:minmax(0,2fr) minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr)}
+label{display:flex;flex-direction:column;gap:4px;font:500 13px "Archivo Narrow",sans-serif;color:var(--mute)}
+input[type=text],input[type=number]{font:16px Archivo,sans-serif;color:var(--ink);background:transparent;border:0;border-bottom:1.5px dotted var(--ink);padding:8px 2px;min-height:44px;width:100%}
+input:focus-visible,button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.row2{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
+.chk{flex-direction:row;align-items:center;gap:8px;font-size:15px;color:var(--ink);min-height:44px;cursor:pointer}
+.chk input{width:18px;height:18px;accent-color:var(--acc)}
+button{font:600 15px Archivo,sans-serif;min-height:44px;padding:0 18px;border:0;background:var(--acc);color:#fff;cursor:pointer}
+button.ghost{background:transparent;color:var(--acc);border:1.5px solid var(--acc)}
+.meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:22px 0 10px;color:var(--mute);font-size:14px}
+.list{display:grid;gap:8px}
+.act{display:grid;grid-template-columns:96px minmax(0,1fr);gap:4px 16px;padding:12px 14px;border:1px solid var(--line);background:var(--card)}
+.ref{font:700 17px "Archivo Narrow",sans-serif;white-space:nowrap}
+.ref small{display:block;font:500 12px Archivo,sans-serif;color:var(--mute)}
+.body p{margin:0}.body .par{color:var(--mute);font-size:15px}
+.body .note{font-size:13px;color:var(--mute);font-style:italic}
+mark{background:var(--acc2);color:inherit;padding:0 2px;border-bottom:2px solid var(--acc)}
+.q{color:var(--warn);font-size:13px;white-space:nowrap}
+.empty{padding:28px;border:1px dashed var(--line);color:var(--mute);text-align:center}
+.cov{margin-top:40px;border-top:2px solid var(--ink);padding-top:18px}
+.cov h2{font:700 22px "Archivo Narrow",sans-serif;margin:0 0 12px}
+.covrow{display:grid;grid-template-columns:120px minmax(0,1fr);gap:10px;align-items:center;margin:6px 0;font-size:14px}
+.yrs{display:flex;flex-wrap:wrap;gap:3px}
+.yr{width:12px;height:18px;background:var(--line)}.yr.on{background:var(--acc)}
+.legend{color:var(--mute);font-size:13px;margin-top:10px}
+@media(max-width:700px){form{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}form label:first-child{grid-column:1/-1}.act{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Standesamt Alt Schalkowitz – indeks aktów</h1>
+<p class="sub">USC Stare Siołkowice · urodzenia (U), małżeństwa (M), zgony (Z) · pisownia jak w aktach</p>
+
+<form id="f" autocomplete="off">
+  <label>Nazwisko<input type="text" id="qn" placeholder="np. Kokot, Woś, Bartylla" autofocus></label>
+  <label>Imię<input type="text" id="qi" placeholder="np. Maria"></label>
+  <label>Rok od<input type="number" id="y1" inputmode="numeric"></label>
+  <label>Rok do<input type="number" id="y2" inputmode="numeric"></label>
+  <div class="row2">
+    <label class="chk"><input type="checkbox" id="tU" checked>U – urodzenia</label>
+    <label class="chk"><input type="checkbox" id="tM" checked>M – małżeństwa</label>
+    <label class="chk"><input type="checkbox" id="tZ" checked>Z – zgony</label>
+    <label class="chk"><input type="checkbox" id="main">tylko osoby główne (bez rodziców)</label>
+    <button type="submit" id="go">Szukaj</button>
+    <button type="button" class="ghost" id="clr">Wyczyść</button>
+  </div>
+</form>
+
+<div class="meta"><span id="cnt">Ładowanie indeksu…</span><span>Pisownia ujednolicana przy szukaniu: Kokot = Kokott, Woś = Wosch</span></div>
+<div class="list" id="res"></div>
+
+<section class="cov">
+  <h2>Stan indeksu</h2>
+  <div id="cov"></div>
+  <p class="legend">Zielone pole = rocznik przerobiony. <span class="q">[?]</span> = niepewny odczyt – sprawdź na skanie. Odnośnik „U 1885/108” = urodzenia, rok 1885, akt nr 108.</p>
+</section>
+</div>
+
+<script>
+{
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const TYP={U:'Urodzenie',M:'Małżeństwo',Z:'Zgon'};
+const RANGE={U:[1874,1915],M:[1874,1935],Z:[1874,1935]};
+let D=[],P=[];
+
+function norm(s){
+  s=String(s||'').toLowerCase().replace(/\[\?\]/g,'').replace(/ł/g,'l').normalize('NFD').replace(/[̀-ͯ]/g,'');
+  s=s.replace(/[^a-z]/g,'');
+  s=s.replace(/sch/g,'s').replace(/sz/g,'s').replace(/tz/g,'c').replace(/cz/g,'c').replace(/ck/g,'k').replace(/th/g,'t').replace(/ph/g,'f')
+     .replace(/w/g,'v').replace(/y/g,'i').replace(/j/g,'i').replace(/(.)\1+/g,'$1');
+  return s;
+}
+// all surname variants in a field: "Woś (Wosch)", "Kokot z d. Rudek", "Kokot (z d. Maciossek)"
+function variants(s){
+  const raw=String(s||'').replace(/\[\?\]/g,'');
+  return raw.split(/\(|\)|\bz d\.|,/).map(x=>norm(x)).filter(Boolean);
+}
+function maiden(s){const m=String(s||'').match(/z d\.\s*([^)\]]+)/);return m?m[1].trim():null}
+function baseName(s){return String(s||'').replace(/\s*\(.*$/,'').replace(/\s*z d\..*$/,'').trim()}
+const q=s=>/\[\?\]/.test(s||'')?' <span class="q">[?]</span>':'';
+const clean=s=>esc(String(s||'').replace(/\s*\[\?\]/g,''));
+
+function persons(d){
+  const L=[];const add=(rola,glowna,im,naz)=>{if(im||naz)L.push({rola,glowna,im,naz,ni:norm(im),nv:variants(naz)})};
+  if(d.t==='U'){add('dziecko',1,d.i,d.n);if(d.o)add('ojciec',0,d.o,baseName(d.n));add('matka',0,d.mi,d.mn)}
+  if(d.t==='M'){add('pan młody',1,d.pi,d.pn);if(d.po)add('ojciec pana',0,d.po,maiden(d.pn)||d.pn);add('matka pana',0,d.pmi,d.pmn);
+    add('panna młoda',1,d.ki,d.kn);if(d.ko)add('ojciec panny',0,d.ko,maiden(d.kn)||d.kn);add('matka panny',0,d.kmi,d.kmn)}
+  if(d.t==='Z'&&d.i){add('zmarły',1,d.i,d.n);if(d.o&&!/^\[/.test(d.o))add('ojciec',0,d.o,maiden(d.n)||d.n);if(d.mi)add('matka',0,d.mi,d.mn)}
+  return L;
+}
+const mother=(im,naz)=>im||naz?`m. ${clean(im)}${naz?' z d. '+clean(naz):''}${q(naz)}`:'';
+const par=(o,mi,mn)=>[o?`o. ${clean(o)}`:'',mother(mi,mn)].filter(Boolean).join(', ');
+function hl(text,hit){return hit?`<mark>${text}</mark>`:text}
+
+function render(d,hits){
+  const H=r=>hits.has(r);let body='';
+  if(d.t==='U'){
+    body=`<p>${hl(`<b>${clean(d.i)} ${clean(d.n)}</b>${q(d.n)}`,H('dziecko'))}</p>
+    <p class="par">${hl(d.o?'o. '+clean(d.o):'',H('ojciec'))}${d.o?', ':''}${hl(mother(d.mi,d.mn),H('matka'))}</p>`}
+  if(d.t==='M'){
+    body=`<p>${hl(`<b>${clean(d.pi)} ${clean(d.pn)}</b>${q(d.pn)}`,H('pan młody'))} <span class="par">(${hl(d.po?'o. '+clean(d.po):'',H('ojciec pana'))}${d.po?', ':''}${hl(mother(d.pmi,d.pmn),H('matka pana'))})</span></p>
+    <p>⚭ ${hl(`<b>${clean(d.ki)} ${clean(d.kn)}</b>${q(d.kn)}`,H('panna młoda'))} <span class="par">(${hl(d.ko?'o. '+clean(d.ko):'',H('ojciec panny'))}${d.ko?', ':''}${hl(mother(d.kmi,d.kmn),H('matka panny'))})</span></p>`}
+  if(d.t==='Z'){
+    body=d.i?`<p>${hl(`<b>${clean(d.i)} ${clean(d.n)}</b>${q(d.n)}`,H('zmarły'))}${d.w?`, ${clean(d.w)}`:''}${q(d.w)}</p>
+    <p class="par">${hl(d.o&&!/^\[/.test(d.o)?'o. '+clean(d.o):'',H('ojciec'))}${d.o&&!/^\[/.test(d.o)&&d.mi?', ':''}${hl(d.mi?mother(d.mi,d.mn):'',H('matka'))}${/^\[/.test(d.o||'')?'rodzice nieznani':''}</p>`:`<p class="par">akt skreślony</p>`}
+  const note=d.u?`<p class="note">${clean(d.u)}</p>`:'';
+  return `<div class="act"><div class="ref">${d.t} ${d.r}/${d.a}<small>${TYP[d.t]}</small></div><div class="body">${body}${note}</div></div>`;
+}
+
+function search(){
+  const qn=norm($('qn').value),qi=norm($('qi').value);
+  const y1=+$('y1').value||0,y2=+$('y2').value||9999,onlyMain=$('main').checked;
+  const types={U:$('tU').checked,M:$('tM').checked,Z:$('tZ').checked};
+  if(!qn&&!qi){$('res').innerHTML='<div class="empty">Wpisz nazwisko lub imię. Wyszukiwanie działa od pierwszych liter.</div>';$('cnt').textContent=`W indeksie: ${D.length} aktów, ${P} osób.`;return}
+  const out=[];
+  for(const d of D){
+    if(!types[d.t]||d.r<y1||d.r>y2)continue;
+    const hits=new Set();
+    for(const p of d._p){
+      if(onlyMain&&!p.glowna)continue;
+      if(qn&&!p.nv.some(v=>v.startsWith(qn)))continue;
+      if(qi&&!String(p.im||'').split(/\s+/).some(w=>norm(w).startsWith(qi)))continue;
+      hits.add(p.rola);
+    }
+    if(hits.size)out.push([d,hits]);
+  }
+  $('cnt').textContent=out.length?`Znaleziono aktów: ${out.length}${out.length>400?' (pokazano 400 – zawęź lata lub dodaj imię)':''}`:'Brak wyników w przerobionych rocznikach.';
+  $('res').innerHTML=out.length?out.slice(0,400).map(([d,h])=>render(d,h)).join(''):'<div class="empty">Brak wyników. Sprawdź w „Stanie indeksu”, czy szukany rocznik jest już przerobiony.</div>';
+}
+
+
+function coverage(){
+  const rows=['U','M','Z'].map(t=>{
+    const ys=new Set(D.filter(d=>d.t===t).map(d=>d.r));const n=D.filter(d=>d.t===t).length;
+    const [Y0,Y1]=RANGE[t];let cells='';for(let y=Y0;y<=Y1;y++)cells+=`<span class="yr${ys.has(y)?' on':''}" title="${y}${ys.has(y)?' – gotowe':''}"></span>`;
+    return `<div class="covrow"><div><b>${t}</b> ${Y0}–${Y1}<br><small>${n} akt.</small></div><div class="yrs" aria-label="${TYP[t]}: roczniki ${[...ys].join(', ')||'brak'}">${cells}</div></div>`}).join('');
+  const all=[...new Set(D.map(d=>d.r))].sort();
+  $('cov').innerHTML=rows+`<p class="legend">Przerobione roczniki: ${all.join(', ')||'brak'}.</p>`;
+}
+
+$('f').addEventListener('submit',e=>{e.preventDefault();search()});
+$('clr').onclick=()=>{$('f').reset();$('tU').checked=$('tM').checked=$('tZ').checked=true;$('res').innerHTML='';$('cnt').textContent=`W indeksie: ${D.length} aktów, ${P} osób.`;$('qn').focus()};
+
+fetch('dane.json').then(r=>r.json()).then(data=>{
+  D=data;P=0;for(const d of D){d._p=persons(d);P+=d._p.length}
+  coverage();$('cnt').textContent=`W indeksie: ${D.length} aktów, ${P} osób. Wpisz nazwisko lub imię i kliknij Szukaj.`;
+}).catch(()=>{$('cnt').textContent='Nie udało się wczytać pliku dane.json.'});
+}
+</script>
+</body>
+</html>
