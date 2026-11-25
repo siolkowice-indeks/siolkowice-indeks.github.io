@@ -7,73 +7,86 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;700&family=Archivo:wght@400;600&display=swap" rel="stylesheet">
 <style>
-/* VOICE: rzeczowy, archiwalny – narzędzie do pracy, nie wystawa
-   IDEA: drukowany formularz Standesamtu z 1885 r. – rubryki, numer aktu, linie do wpisu
-   PICTURE: sama wyszukiwarka jest obrazem: pole nazwiska jak rubryka formularza, wyniki jak wpisy z numerem "Nr."
-   COLOUR and TYPE: biały papier, atrament #1b2230, zieleń drukarska formularzy #1f5c4a jako jedyny akcent; Archivo Narrow + Archivo
-   LAYOUT: jedna kolumna do 1000px; formularz u góry, wyniki pod spodem, stan indeksu na dole */
+/* VOICE: rzeczowy, archiwalny – narzędzie do pracy
+   IDEA: drukowany formularz Standesamtu – rubryki i zakładki ksiąg U/M/Z
+   PICTURE: formularz wyszukiwania jak rubryka, wyniki jak tabela rejestru
+   COLOUR and TYPE: biały papier, atrament #1b2230, zieleń formularzy #1f5c4a; Archivo Narrow + Archivo
+   LAYOUT: jedna kolumna do 1100px: zakładki, formularz, tabela, stan indeksu */
 :root{color-scheme:light dark;--bg:light-dark(#ffffff,#12161d);--ink:light-dark(#1b2230,#e7eaef);--mute:light-dark(#5d6573,#9aa3b2);--line:light-dark(#d9dde3,#2c3440);--acc:light-dark(#1f5c4a,#6fc1a5);--acc2:light-dark(#e8f1ee,#1b2a26);--warn:light-dark(#a1462b,#f0a184);--card:light-dark(#fafbfc,#171c24)}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Archivo,system-ui,sans-serif;overflow-x:clip}
-.wrap{max-width:1000px;margin:0 auto;padding:clamp(20px,4vw,48px) max(4vw,16px)}
+.wrap{max-width:1100px;margin:0 auto;padding:clamp(20px,4vw,48px) max(4vw,16px)}
 h1{font:700 clamp(30px,5vw,44px)/1.05 "Archivo Narrow",sans-serif;margin:0 0 6px;text-wrap:balance}
 .sub{color:var(--mute);margin:0 0 24px}
-form{border:2px solid var(--ink);padding:18px;display:grid;gap:14px;grid-template-columns:minmax(0,2fr) minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr)}
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--ink)}
+.tab{flex:1;font:700 16px "Archivo Narrow",sans-serif;min-height:48px;padding:0 12px;border:2px solid var(--ink);border-bottom:0;background:var(--bg);color:var(--ink);cursor:pointer;margin-right:-2px}
+.tab[aria-selected=true]{background:var(--ink);color:var(--bg)}
+form{border:2px solid var(--ink);border-top:0;padding:18px;display:grid;gap:14px;grid-template-columns:minmax(0,2fr) minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr)}
 label{display:flex;flex-direction:column;gap:4px;font:500 13px "Archivo Narrow",sans-serif;color:var(--mute)}
 input[type=text],input[type=number]{font:16px Archivo,sans-serif;color:var(--ink);background:transparent;border:0;border-bottom:1.5px dotted var(--ink);padding:8px 2px;min-height:44px;width:100%}
 input:focus-visible,button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 .row2{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
 .chk{flex-direction:row;align-items:center;gap:8px;font-size:15px;color:var(--ink);min-height:44px;cursor:pointer}
 .chk input{width:18px;height:18px;accent-color:var(--acc)}
-button{font:600 15px Archivo,sans-serif;min-height:44px;padding:0 18px;border:0;background:var(--acc);color:#fff;cursor:pointer}
+.sp{flex:1}
+button{font:600 15px Archivo,sans-serif;min-height:44px;padding:0 22px;border:0;background:var(--acc);color:#fff;cursor:pointer}
 button.ghost{background:transparent;color:var(--acc);border:1.5px solid var(--acc)}
+button:disabled{opacity:.4;cursor:default}
 .meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:22px 0 10px;color:var(--mute);font-size:14px}
-.list{display:grid;gap:8px}
-.act{display:grid;grid-template-columns:96px minmax(0,1fr);gap:4px 16px;padding:12px 14px;border:1px solid var(--line);background:var(--card)}
-.ref{font:700 17px "Archivo Narrow",sans-serif;white-space:nowrap}
-.ref small{display:block;font:500 12px Archivo,sans-serif;color:var(--mute)}
-.body p{margin:0}.body .par{color:var(--mute);font-size:15px}
-.body .note{font-size:13px;color:var(--mute);font-style:italic}
-mark{background:var(--acc2);color:inherit;padding:0 2px;border-bottom:2px solid var(--acc)}
-.q{color:var(--warn);font-size:13px;white-space:nowrap}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th{font:700 13px "Archivo Narrow",sans-serif;text-align:left;color:var(--mute);border-bottom:2px solid var(--ink);padding:8px 8px;vertical-align:bottom}
+td{border-bottom:1px solid var(--line);padding:8px;vertical-align:top}
+td.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+th.grp{text-align:center;border-bottom:1px solid var(--line)}
+td.sep,th.sep{border-left:2px solid var(--line)}
+tr.hit td.h{background:var(--acc2)}
+td.u{font-size:13px;color:var(--mute);font-style:italic}
+.q{color:var(--warn);font-size:12px;white-space:nowrap}
 .empty{padding:28px;border:1px dashed var(--line);color:var(--mute);text-align:center}
+.pager{display:flex;gap:10px;align-items:center;justify-content:center;margin:16px 0;flex-wrap:wrap}
 .cov{margin-top:40px;border-top:2px solid var(--ink);padding-top:18px}
 .cov h2{font:700 22px "Archivo Narrow",sans-serif;margin:0 0 12px}
-.covrow{display:grid;grid-template-columns:120px minmax(0,1fr);gap:10px;align-items:center;margin:6px 0;font-size:14px}
+.covrow{display:grid;grid-template-columns:130px minmax(0,1fr);gap:10px;align-items:center;margin:8px 0;font-size:14px}
 .yrs{display:flex;flex-wrap:wrap;gap:3px}
 .yr{width:12px;height:18px;background:var(--line)}.yr.on{background:var(--acc)}
 .legend{color:var(--mute);font-size:13px;margin-top:10px}
-@media(max-width:700px){form{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}form label:first-child{grid-column:1/-1}.act{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:700px){form{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}form label:first-child{grid-column:1/-1}.tab{font-size:14px;padding:0 6px}}
+@media(max-width:600px){table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flow-root;border:0;padding:3px 0;padding-inline-start:8.5em;text-align:start}.stack td::before{content:attr(data-l);float:inline-start;width:8em;margin-inline-start:-8.5em;color:var(--mute);font-size:12px}.stack td:empty{display:none}td.sep{border-left:0}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <h1>Standesamt Alt Schalkowitz – indeks aktów</h1>
-<p class="sub">USC Stare Siołkowice · urodzenia (U), małżeństwa (M), zgony (Z) · pisownia jak w aktach</p>
+<p class="sub">USC Stare Siołkowice · nazwiska w pisowni z aktów</p>
 
+<div class="tabs" role="tablist">
+  <button class="tab" role="tab" data-t="U" aria-selected="true">U – urodzenia</button>
+  <button class="tab" role="tab" data-t="M" aria-selected="false">M – małżeństwa</button>
+  <button class="tab" role="tab" data-t="Z" aria-selected="false">Z – zgony</button>
+</div>
 <form id="f" autocomplete="off">
-  <label>Nazwisko<input type="text" id="qn" placeholder="np. Kokot, Woś, Bartylla" autofocus></label>
-  <label>Imię<input type="text" id="qi" placeholder="np. Maria"></label>
+  <label>Nazwisko<input type="text" id="qn" placeholder="puste = wszystkie"></label>
+  <label>Imię<input type="text" id="qi" placeholder="puste = wszystkie"></label>
   <label>Rok od<input type="number" id="y1" inputmode="numeric"></label>
   <label>Rok do<input type="number" id="y2" inputmode="numeric"></label>
   <div class="row2">
-    <label class="chk"><input type="checkbox" id="tU" checked>U – urodzenia</label>
-    <label class="chk"><input type="checkbox" id="tM" checked>M – małżeństwa</label>
-    <label class="chk"><input type="checkbox" id="tZ" checked>Z – zgony</label>
-    <label class="chk"><input type="checkbox" id="main">tylko osoby główne (bez rodziców)</label>
-    <button type="submit" id="go">Szukaj</button>
+    <label class="chk"><input type="checkbox" id="par">szukaj też wśród rodziców</label>
+    <span class="sp"></span>
     <button type="button" class="ghost" id="clr">Wyczyść</button>
+    <button type="submit">Szukaj</button>
   </div>
 </form>
 
-<div class="meta"><span id="cnt">Ładowanie indeksu…</span><span>Pisownia ujednolicana przy szukaniu: Kokot = Kokott, Woś = Wosch</span></div>
-<div class="list" id="res"></div>
+<div class="meta"><span id="cnt">Ładowanie indeksu…</span><span>Szukanie toleruje pisownię: Kokot = Kokott, Wosch = Woś</span></div>
+<div id="res"></div>
+<div class="pager" id="pg"></div>
 
 <section class="cov">
   <h2>Stan indeksu</h2>
   <div id="cov"></div>
-  <p class="legend">Zielone pole = rocznik przerobiony. <span class="q">[?]</span> = niepewny odczyt – sprawdź na skanie. Odnośnik „U 1885/108” = urodzenia, rok 1885, akt nr 108.</p>
+  <p class="legend">Zielone pole = rocznik przerobiony. <span class="q">[?]</span> = niepewny odczyt – sprawdź na skanie. „z d.” = z domu (geborene).</p>
 </section>
 </div>
 
@@ -81,92 +94,81 @@ mark{background:var(--acc2);color:inherit;padding:0 2px;border-bottom:2px solid 
 {
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const TYP={U:'Urodzenie',M:'Małżeństwo',Z:'Zgon'};
+const TYP={U:'Urodzenia',M:'Małżeństwa',Z:'Zgony'};
 const RANGE={U:[1874,1915],M:[1874,1935],Z:[1874,1935]};
-let D=[],P=[];
+const PER=100;
+let D=[],T='U',RES=[],page=0;
 
 function norm(s){
-  s=String(s||'').toLowerCase().replace(/\[\?\]/g,'').replace(/ł/g,'l').normalize('NFD').replace(/[̀-ͯ]/g,'');
-  s=s.replace(/[^a-z]/g,'');
-  s=s.replace(/sch/g,'s').replace(/sz/g,'s').replace(/tz/g,'c').replace(/cz/g,'c').replace(/ck/g,'k').replace(/th/g,'t').replace(/ph/g,'f')
-     .replace(/w/g,'v').replace(/y/g,'i').replace(/j/g,'i').replace(/(.)\1+/g,'$1');
-  return s;
+  s=String(s||'').toLowerCase().replace(/\[\?\]/g,'').replace(/ł/g,'l').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z]/g,'');
+  return s.replace(/sch/g,'s').replace(/sz/g,'s').replace(/tz/g,'c').replace(/cz/g,'c').replace(/ck/g,'k').replace(/th/g,'t').replace(/ph/g,'f')
+          .replace(/w/g,'v').replace(/y/g,'i').replace(/j/g,'i').replace(/(.)\1+/g,'$1');
 }
-// all surname variants in a field: "Woś (Wosch)", "Kokot z d. Rudek", "Kokot (z d. Maciossek)"
-function variants(s){
-  const raw=String(s||'').replace(/\[\?\]/g,'');
-  return raw.split(/\(|\)|\bz d\.|,/).map(x=>norm(x)).filter(Boolean);
-}
-function maiden(s){const m=String(s||'').match(/z d\.\s*([^)\]]+)/);return m?m[1].trim():null}
-function baseName(s){return String(s||'').replace(/\s*\(.*$/,'').replace(/\s*z d\..*$/,'').trim()}
-const q=s=>/\[\?\]/.test(s||'')?' <span class="q">[?]</span>':'';
-const clean=s=>esc(String(s||'').replace(/\s*\[\?\]/g,''));
+const variants=s=>String(s||'').replace(/\[\?\]/g,'').split(/\(|\)|\bz d\.|,/).map(norm).filter(Boolean);
+const maiden=s=>{const m=String(s||'').match(/z d\.\s*([^)\]]+)/);return m?m[1].trim():null};
+const baseName=s=>String(s||'').replace(/\s*\(.*$/,'').replace(/\s*z d\..*$/,'').trim();
+const cell=s=>{const t=String(s||'');return esc(t.replace(/\s*\[\?\]/g,''))+(/\[\?\]/.test(t)?' <span class="q">[?]</span>':'')};
 
+// persons: [glowna, imie, nazwisko]
 function persons(d){
-  const L=[];const add=(rola,glowna,im,naz)=>{if(im||naz)L.push({rola,glowna,im,naz,ni:norm(im),nv:variants(naz)})};
-  if(d.t==='U'){add('dziecko',1,d.i,d.n);if(d.o)add('ojciec',0,d.o,baseName(d.n));add('matka',0,d.mi,d.mn)}
-  if(d.t==='M'){add('pan młody',1,d.pi,d.pn);if(d.po)add('ojciec pana',0,d.po,maiden(d.pn)||d.pn);add('matka pana',0,d.pmi,d.pmn);
-    add('panna młoda',1,d.ki,d.kn);if(d.ko)add('ojciec panny',0,d.ko,maiden(d.kn)||d.kn);add('matka panny',0,d.kmi,d.kmn)}
-  if(d.t==='Z'&&d.i){add('zmarły',1,d.i,d.n);if(d.o&&!/^\[/.test(d.o))add('ojciec',0,d.o,maiden(d.n)||d.n);if(d.mi)add('matka',0,d.mi,d.mn)}
+  const L=[];const add=(g,im,naz)=>{if(im||naz)L.push({g,ni:String(im||'').split(/\s+/).map(norm),nv:variants(naz)})};
+  if(d.t==='U'){add(1,d.i,d.n);if(d.o)add(0,d.o,baseName(d.n));add(0,d.mi,d.mn)}
+  if(d.t==='M'){add(1,d.pi,d.pn);if(d.po)add(0,d.po,maiden(d.pn)||d.pn);add(0,d.pmi,d.pmn);add(1,d.ki,d.kn);if(d.ko)add(0,d.ko,maiden(d.kn)||d.kn);add(0,d.kmi,d.kmn)}
+  if(d.t==='Z'&&d.i){add(1,d.i,d.n);if(d.o&&!/^\[/.test(d.o))add(0,d.o,maiden(d.n)||d.n);if(d.mi)add(0,d.mi,d.mn)}
   return L;
 }
-const mother=(im,naz)=>im||naz?`m. ${clean(im)}${naz?' z d. '+clean(naz):''}${q(naz)}`:'';
-const par=(o,mi,mn)=>[o?`o. ${clean(o)}`:'',mother(mi,mn)].filter(Boolean).join(', ');
-function hl(text,hit){return hit?`<mark>${text}</mark>`:text}
 
-function render(d,hits){
-  const H=r=>hits.has(r);let body='';
-  if(d.t==='U'){
-    body=`<p>${hl(`<b>${clean(d.i)} ${clean(d.n)}</b>${q(d.n)}`,H('dziecko'))}</p>
-    <p class="par">${hl(d.o?'o. '+clean(d.o):'',H('ojciec'))}${d.o?', ':''}${hl(mother(d.mi,d.mn),H('matka'))}</p>`}
-  if(d.t==='M'){
-    body=`<p>${hl(`<b>${clean(d.pi)} ${clean(d.pn)}</b>${q(d.pn)}`,H('pan młody'))} <span class="par">(${hl(d.po?'o. '+clean(d.po):'',H('ojciec pana'))}${d.po?', ':''}${hl(mother(d.pmi,d.pmn),H('matka pana'))})</span></p>
-    <p>⚭ ${hl(`<b>${clean(d.ki)} ${clean(d.kn)}</b>${q(d.kn)}`,H('panna młoda'))} <span class="par">(${hl(d.ko?'o. '+clean(d.ko):'',H('ojciec panny'))}${d.ko?', ':''}${hl(mother(d.kmi,d.kmn),H('matka panny'))})</span></p>`}
-  if(d.t==='Z'){
-    body=d.i?`<p>${hl(`<b>${clean(d.i)} ${clean(d.n)}</b>${q(d.n)}`,H('zmarły'))}${d.w?`, ${clean(d.w)}`:''}${q(d.w)}</p>
-    <p class="par">${hl(d.o&&!/^\[/.test(d.o)?'o. '+clean(d.o):'',H('ojciec'))}${d.o&&!/^\[/.test(d.o)&&d.mi?', ':''}${hl(d.mi?mother(d.mi,d.mn):'',H('matka'))}${/^\[/.test(d.o||'')?'rodzice nieznani':''}</p>`:`<p class="par">akt skreślony</p>`}
-  const note=d.u?`<p class="note">${clean(d.u)}</p>`:'';
-  return `<div class="act"><div class="ref">${d.t} ${d.r}/${d.a}<small>${TYP[d.t]}</small></div><div class="body">${body}${note}</div></div>`;
+const HEAD={
+ U:`<tr><th>Rok</th><th>Akt</th><th>Imię</th><th>Nazwisko</th><th class="sep">Imię ojca</th><th>Imię matki</th><th>Nazwisko matki</th><th>Uwagi</th></tr>`,
+ M:`<tr><th rowspan="2">Rok</th><th rowspan="2">Akt</th><th colspan="5" class="grp">Pan młody</th><th colspan="5" class="grp sep">Panna młoda</th><th rowspan="2">Uwagi</th></tr>
+    <tr><th>Imię</th><th>Nazwisko</th><th>Ojciec</th><th>Imię matki</th><th>Nazwisko matki</th><th class="sep">Imię</th><th>Nazwisko</th><th>Ojciec</th><th>Imię matki</th><th>Nazwisko matki</th></tr>`,
+ Z:`<tr><th>Rok</th><th>Akt</th><th>Imię</th><th>Nazwisko</th><th>Wiek</th><th class="sep">Imię ojca</th><th>Imię matki</th><th>Nazwisko matki</th><th>Uwagi</th></tr>`};
+const LAB={U:['Rok','Akt','Imię','Nazwisko','Imię ojca','Imię matki','Nazwisko matki','Uwagi'],
+ M:['Rok','Akt','Pan – imię','Pan – nazwisko','Pan – ojciec','Pan – imię matki','Pan – nazw. matki','Panna – imię','Panna – nazwisko','Panna – ojciec','Panna – imię matki','Panna – nazw. matki','Uwagi'],
+ Z:['Rok','Akt','Imię','Nazwisko','Wiek','Imię ojca','Imię matki','Nazwisko matki','Uwagi']};
+function row(d){
+  let c;
+  if(d.t==='U')c=[d.r,d.a,d.i,d.n,d.o,d.mi,d.mn,d.u];
+  if(d.t==='M')c=[d.r,d.a,d.pi,d.pn,d.po,d.pmi,d.pmn,d.ki,d.kn,d.ko,d.kmi,d.kmn,d.u];
+  if(d.t==='Z')c=d.i?[d.r,d.a,d.i,d.n,d.w,d.o,d.mi,d.mn,d.u]:[d.r,d.a,'','','','','','',d.u||'akt skreślony'];
+  const sepAt={U:[4],M:[7],Z:[5]}[d.t];const L=LAB[d.t];const last=c.length-1;
+  return '<tr>'+c.map((v,i)=>`<td data-l="${L[i]}" class="${i<2?'n':''}${sepAt.includes(i)?' sep':''}${i===last?' u':''}">${cell(v)}</td>`).join('')+'</tr>';
 }
 
 function search(){
   const qn=norm($('qn').value),qi=norm($('qi').value);
-  const y1=+$('y1').value||0,y2=+$('y2').value||9999,onlyMain=$('main').checked;
-  const types={U:$('tU').checked,M:$('tM').checked,Z:$('tZ').checked};
-  if(!qn&&!qi){$('res').innerHTML='<div class="empty">Wpisz nazwisko lub imię. Wyszukiwanie działa od pierwszych liter.</div>';$('cnt').textContent=`W indeksie: ${D.length} aktów, ${P} osób.`;return}
-  const out=[];
-  for(const d of D){
-    if(!types[d.t]||d.r<y1||d.r>y2)continue;
-    const hits=new Set();
-    for(const p of d._p){
-      if(onlyMain&&!p.glowna)continue;
-      if(qn&&!p.nv.some(v=>v.startsWith(qn)))continue;
-      if(qi&&!String(p.im||'').split(/\s+/).some(w=>norm(w).startsWith(qi)))continue;
-      hits.add(p.rola);
-    }
-    if(hits.size)out.push([d,hits]);
-  }
-  $('cnt').textContent=out.length?`Znaleziono aktów: ${out.length}${out.length>400?' (pokazano 400 – zawęź lata lub dodaj imię)':''}`:'Brak wyników w przerobionych rocznikach.';
-  $('res').innerHTML=out.length?out.slice(0,400).map(([d,h])=>render(d,h)).join(''):'<div class="empty">Brak wyników. Sprawdź w „Stanie indeksu”, czy szukany rocznik jest już przerobiony.</div>';
+  const y1=+$('y1').value||0,y2=+$('y2').value||9999,par=$('par').checked;
+  RES=D.filter(d=>{
+    if(d.t!==T||d.r<y1||d.r>y2)return false;
+    if(!qn&&!qi)return true;
+    return d._p.some(p=>(par||p.g)&&(!qn||p.nv.some(v=>v.startsWith(qn)))&&(!qi||p.ni.some(w=>w.startsWith(qi))));
+  });
+  page=0;show();
 }
-
+function show(){
+  const n=RES.length,pages=Math.ceil(n/PER);
+  $('cnt').textContent=n?`${TYP[T]}: ${n} ${n===1?'akt':'aktów'}${pages>1?` · strona ${page+1} z ${pages}`:''}`:`${TYP[T]}: brak wyników w przerobionych rocznikach.`;
+  $('res').innerHTML=n?`<div class="scroll"><table class="stack"><thead>${HEAD[T]}</thead><tbody>${RES.slice(page*PER,(page+1)*PER).map(row).join('')}</tbody></table></div>`
+    :'<div class="empty">Brak wyników. Sprawdź w „Stanie indeksu”, czy szukany rocznik jest już przerobiony.</div>';
+  $('pg').innerHTML=pages>1?`<button type="button" class="ghost" id="prev" ${page?'':'disabled'}>← Poprzednie</button><span>${page+1} / ${pages}</span><button type="button" class="ghost" id="next" ${page<pages-1?'':'disabled'}>Następne →</button>`:'';
+}
+$('pg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.disabled)return;page+=b.id==='next'?1:-1;show();$('cnt').scrollIntoView()});
 
 function coverage(){
-  const rows=['U','M','Z'].map(t=>{
-    const ys=new Set(D.filter(d=>d.t===t).map(d=>d.r));const n=D.filter(d=>d.t===t).length;
-    const [Y0,Y1]=RANGE[t];let cells='';for(let y=Y0;y<=Y1;y++)cells+=`<span class="yr${ys.has(y)?' on':''}" title="${y}${ys.has(y)?' – gotowe':''}"></span>`;
-    return `<div class="covrow"><div><b>${t}</b> ${Y0}–${Y1}<br><small>${n} akt.</small></div><div class="yrs" aria-label="${TYP[t]}: roczniki ${[...ys].join(', ')||'brak'}">${cells}</div></div>`}).join('');
-  const all=[...new Set(D.map(d=>d.r))].sort();
-  $('cov').innerHTML=rows+`<p class="legend">Przerobione roczniki: ${all.join(', ')||'brak'}.</p>`;
+  $('cov').innerHTML=['U','M','Z'].map(t=>{
+    const ys=new Set(D.filter(d=>d.t===t).map(d=>d.r));const n=D.filter(d=>d.t===t).length;const [a,b]=RANGE[t];
+    let cells='';for(let y=a;y<=b;y++)cells+=`<span class="yr${ys.has(y)?' on':''}" title="${y}"></span>`;
+    return `<div class="covrow"><div><b>${t}</b> ${a}–${b}<br><small>${n} akt. · roczniki: ${[...ys].sort().join(', ')||'brak'}</small></div><div class="yrs">${cells}</div></div>`}).join('');
 }
+function idle(){$('res').innerHTML='';$('pg').innerHTML='';$('cnt').textContent=`${TYP[T]}: ${D.filter(d=>d.t===T).length} aktów w indeksie. Kliknij Szukaj (puste pola = wszystkie).`}
 
+document.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;
+  T=b.dataset.t;document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===b));idle()});
 $('f').addEventListener('submit',e=>{e.preventDefault();search()});
-$('clr').onclick=()=>{$('f').reset();$('tU').checked=$('tM').checked=$('tZ').checked=true;$('res').innerHTML='';$('cnt').textContent=`W indeksie: ${D.length} aktów, ${P} osób.`;$('qn').focus()};
+$('clr').onclick=()=>{$('f').reset();idle();$('qn').focus()};
 
-fetch('dane.json').then(r=>r.json()).then(data=>{
-  D=data;P=0;for(const d of D){d._p=persons(d);P+=d._p.length}
-  coverage();$('cnt').textContent=`W indeksie: ${D.length} aktów, ${P} osób. Wpisz nazwisko lub imię i kliknij Szukaj.`;
-}).catch(()=>{$('cnt').textContent='Nie udało się wczytać pliku dane.json.'});
+fetch('dane.json').then(r=>r.json()).then(data=>{D=data;for(const d of D)d._p=persons(d);coverage();idle()})
+  .catch(()=>{$('cnt').textContent='Nie udało się wczytać pliku dane.json.'});
 }
 </script>
 </body>
