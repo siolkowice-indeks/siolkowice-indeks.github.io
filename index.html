@@ -16,9 +16,10 @@
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Archivo,system-ui,sans-serif;overflow-x:clip}
-.wrap{max-width:1100px;margin:0 auto;padding:clamp(20px,4vw,48px) max(4vw,16px)}
+.wrap{max-width:1360px;margin:0 auto;padding:clamp(20px,4vw,48px) max(4vw,16px)}
 h1{font:700 clamp(30px,5vw,44px)/1.05 "Archivo Narrow",sans-serif;margin:0 0 6px;text-wrap:balance}
-.sub{color:var(--mute);margin:0 0 24px}
+.sub{color:var(--mute);margin:0 0 10px}
+.skany{margin:0 0 24px;font-size:15px;color:var(--mute)}.skany a{font:700 16px "Archivo Narrow",sans-serif;color:var(--acc);text-decoration:underline;text-underline-offset:4px;display:inline-block;padding:8px 0;margin-right:6px}
 .tabs{display:flex;gap:0;border-bottom:2px solid var(--ink)}
 .tab{flex:1;font:700 16px "Archivo Narrow",sans-serif;min-height:48px;padding:0 12px;border:2px solid var(--ink);border-bottom:0;background:var(--bg);color:var(--ink);cursor:pointer;margin-right:-2px}
 .tab[aria-selected=true]{background:var(--ink);color:var(--bg)}
@@ -38,6 +39,7 @@ button:disabled{opacity:.4;cursor:default}
 table{border-collapse:collapse;width:100%;font-size:15px}
 th{font:700 13px "Archivo Narrow",sans-serif;text-align:left;color:var(--mute);border-bottom:2px solid var(--ink);padding:8px 8px;vertical-align:bottom}
 td{border-bottom:1px solid var(--line);padding:8px;vertical-align:top}
+table.m{font-size:14px}table.m th,table.m td{padding:6px 5px}
 td.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 th.grp{text-align:center;border-bottom:1px solid var(--line)}
 td.sep,th.sep{border-left:2px solid var(--line)}
@@ -59,6 +61,7 @@ tr.hit td.h{background:var(--acc2)}
 <div class="wrap">
 <h1>Standesamt Alt Schalkowitz – indeks aktów</h1>
 <p class="sub">USC Stare Siołkowice · nazwiska w pisowni z aktów</p>
+<p class="skany"><a href="https://www.szukajwarchiwach.gov.pl/zespol/-/zespol/45478?_Zespol_javax.portlet.action=zmienWidok&amp;_Zespol_nameofjsp=jednostki&amp;_Zespol_resetCur=false&amp;_Zespol_delta=200" target="_blank" rel="noopener">SKANY AKTÓW →</a> <span>w serwisie Szukajwarchiwach</span></p>
 
 <div class="tabs" role="tablist">
   <button class="tab" role="tab" data-t="U" aria-selected="true">U – urodzenia</button>
@@ -147,7 +150,7 @@ function search(){
 function show(){
   const n=RES.length,pages=Math.ceil(n/PER);
   $('cnt').textContent=n?`${TYP[T]}: ${n} ${n===1?'akt':'aktów'}${pages>1?` · strona ${page+1} z ${pages}`:''}`:`${TYP[T]}: brak wyników w przerobionych rocznikach.`;
-  $('res').innerHTML=n?`<div class="scroll"><table class="stack"><thead>${HEAD[T]}</thead><tbody>${RES.slice(page*PER,(page+1)*PER).map(row).join('')}</tbody></table></div>`
+  $('res').innerHTML=n?`<div class="scroll"><table class="stack${T==='M'?' m':''}"><thead>${HEAD[T]}</thead><tbody>${RES.slice(page*PER,(page+1)*PER).map(row).join('')}</tbody></table></div>`
     :'<div class="empty">Brak wyników. Sprawdź w „Stanie indeksu”, czy szukany rocznik jest już przerobiony.</div>';
   $('pg').innerHTML=pages>1?`<button type="button" class="ghost" id="prev" ${page?'':'disabled'}>← Poprzednie</button><span>${page+1} / ${pages}</span><button type="button" class="ghost" id="next" ${page<pages-1?'':'disabled'}>Następne →</button>`:'';
 }
